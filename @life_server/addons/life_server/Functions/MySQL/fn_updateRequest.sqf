@@ -5,7 +5,7 @@
 	Description:
 	Ain't got time to describe it, READ THE FILE NAME!
 */
-private["_uid","_side","_cash","_bank","_licenses","_gear","_name","_query","_thread", "_arrested"];
+private["_uid","_side","_cash","_bank","_licenses","_gear","_name","_query","_thread"];
 _uid = [_this,0,"",[""]] call BIS_fnc_param;
 _name = [_this,1,"",[""]] call BIS_fnc_param;
 _side = [_this,2,sideUnknown,[civilian]] call BIS_fnc_param;
@@ -32,18 +32,9 @@ for "_i" from 0 to count(_licenses)-1 do {
 _licenses = [_licenses] call DB_fnc_mresArray;
 
 switch (_side) do {
-	case west: {
-		_query = format["UPDATE players SET name='%1', cash='%2', bankacc='%3', cop_gear='%4', cop_licenses='%5'WHERE playerid='%6'", _name, _cash, _bank, _gear, _licenses, _uid];
-	};		
-
-	case civilian: {
-		_arrested = [_this select 7] call DB_fnc_bool;
-		_query = format["UPDATE players SET name='%1', cash='%2', bankacc='%3', civ_gear='%4', civ_licenses='%5', arrested='%7' WHERE playerid='%6'", _name, _cash, _bank, _gear, _licenses, _uid, _arrested];
-	};
-
-	case independent: {
-		_query = format["UPDATE players SET name='%1', cash='%2', bankacc='%3', med_gear='%4', med_licenses='%5' WHERE playerid='%6'", _name, _cash, _bank, _gear, _licenses, _uid];
-	};
+	case west: {_query = format["UPDATE players SET name='%1', cash='%2', bankacc='%3', cop_gear='%4', cop_licenses='%5' WHERE playerid='%6'",_name,_cash,_bank,_gear,_licenses,_uid];};
+	case civilian: {_query = format["UPDATE players SET name='%1', cash='%2', bankacc='%3', civ_licenses='%4', civ_gear='%6', arrested='%7' WHERE playerid='%5'",_name,_cash,_bank,_licenses,_uid,_gear,[_this select 7] call DB_fnc_bool];};
+	case independent: {_query = format["UPDATE players SET name='%1', cash='%2', bankacc='%3', med_licenses='%4', med_gear='%6' WHERE playerid='%5'",_name,_cash,_bank,_licenses,_uid,_gear];};
 };
 
 waitUntil {sleep (random 0.3); !DB_Async_Active};

@@ -23,7 +23,7 @@ _ownerID = owner _ownerID;
 	The other part is well the SQL statement.
 */
 _query = switch(_side) do {
-	case west: {_returnCount = 9; format["SELECT playerid, name, cash, bankacc, adminlevel, donatorlvl, cop_licenses, coplevel, cop_gear FROM players WHERE playerid='%1'",_uid];};
+	case west: {_returnCount = 10; format["SELECT playerid, name, cash, bankacc, adminlevel, donatorlvl, cop_licenses, coplevel, cop_gear, blacklist FROM players WHERE playerid='%1'",_uid];};
 	case civilian: {_returnCount = 9; format["SELECT playerid, name, cash, bankacc, adminlevel, donatorlvl, civ_licenses, arrested, civ_gear FROM players WHERE playerid='%1'",_uid];};
 	case independent: {_returnCount = 9; format["SELECT playerid, name, cash, bankacc, adminlevel, donatorlvl, med_licenses, mediclevel, med_gear FROM players WHERE playerid='%1'",_uid];};
 };
@@ -71,17 +71,24 @@ _queryResult set[6,_old];
 _new = [(_queryResult select 8)] call DB_fnc_mresToArray;
 if(typeName _new == "STRING") then {_new = call compile format["%1", _new];};
 _queryResult set[8,_new];
-
 //Parse data for specific side.
 switch (_side) do {
+	case west: {
+		_queryResult set[9,([_queryResult select 9,1] call DB_fnc_bool)];
+	};
+	
 	case civilian: {
-		//arrested
 		_queryResult set[7,([_queryResult select 7,1] call DB_fnc_bool)];
+		_houseData = _uid spawn TON_fnc_fetchPlayerHouses;
+		waitUntil {scriptDone _houseData};
+		_queryResult pushBack (missionNamespace getVariable[format["houses_%1",_uid],[]]);
+		_gangData = _uid spawn TON_fnc_queryPlayerGang;
+		waitUntil{scriptDone _gangData};
+		_queryResult pushBack (missionNamespace getVariable[format["gang_%1",_uid],[]]);
 	};
 };
 
-_houseData = _uid spawn TON_fnc_fetchPlayerHouses;
-waitUntil {scriptDone _houseData};
-_queryResult set[count _queryResult,(missionNamespace getVariable[format["houses_%1",_uid],[]])];
+_keyArr = missionNamespace getVariable [format["%1_KEYS_%2",_uid,_side],[]];
+_queryResult set[12,_keyArr];
 
 [_queryResult,"SOCK_fnc_requestReceived",_ownerID,false] spawn life_fnc_MP;
