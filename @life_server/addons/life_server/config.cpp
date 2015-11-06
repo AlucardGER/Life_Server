@@ -107,6 +107,14 @@ class CfgFunctions
 			class keyManagement {};
 		};
 		
+		class AS
+		{
+			file = "\life_server\AS_AdminMenu";
+			class receiver {};
+			class config {};
+			class getActions {};
+		};
+		
 		class Housing
 		{
 			file = "\life_server\Functions\Housing";
