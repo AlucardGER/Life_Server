@@ -3,11 +3,13 @@ AS_Enabled = true;
 AS_Allowed =
 [
 	["76561198084167946",2],
+	["76561198102879481",2],
+	["76561198003532796",2]
 ];
 
 AS_Actions =
 [
-	[1, // Group with Level 0
+	[1, // Group with Level 1
 		[
 			// Normal Actions
 			"Toggle Godmode",
@@ -21,7 +23,7 @@ AS_Actions =
 		]
 	],
 
-	[2, // Group with Level 1
+	[2, // Group with Level 2
 		[
 			// Normal Actions
 			"Toggle Godmode",
