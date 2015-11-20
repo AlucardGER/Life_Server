@@ -66,6 +66,9 @@ switch(_type) do
     case "38": {_type = ["Fliegen ohne Fluglizenz",1200]};
     case "39": {_type = ["Dauerhaft störendes Hupen",1000]};
     case "40": {_type = ["Handel mit exotischen Gütern",25000]};
+	
+	case "1002": {_type = ["Hacking",150000]};
+	case "1003": {_type = ["Vers. Hacking",50000]};
     default {_type = [];};
 };
 
